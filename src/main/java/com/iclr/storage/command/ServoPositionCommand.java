@@ -7,7 +7,24 @@ public class ServoPositionCommand extends ServoCommand<Double> {
     private double maxAngle;
 
     public ServoPositionCommand(int servoNum,double angle,double maxAngle){
-        super();
+        super(new ServoCommandInterpreter<Double>() {
+            @Override
+            public ServoCommand<Double> interpretCommand(int servoNum, String commandArgRaw, Object... otherParams) throws ServoCommandSyntaxException {
+                try {
+                    double maxAngle = (double) otherParams[0];
+                    double angle = Double.parseDouble(commandArgRaw);
+                    if (angle > maxAngle){
+                        throw new ServoCommandSyntaxException("Specified servo angle '"+commandArgRaw+"' is greater than max allowable ("+maxAngle+")!");
+                    }
+                    if (angle < 0){
+                        throw new ServoCommandSyntaxException("Specified servo angle '"+commandArgRaw+"' is not allowed to be negative!");
+                    }
+                    return new ServoPositionCommand(servoNum,angle, maxAngle);
+                } catch (NumberFormatException e) {
+                    throw new ServoCommandSyntaxException("Specified servo angle '"+commandArgRaw+"' is not a valid double (number)!");
+                }
+            }
+        });
         this.servonum = servoNum;
         this.commandArg = angle;
         this.maxAngle = maxAngle;

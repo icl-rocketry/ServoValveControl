@@ -13,6 +13,8 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Edward on 19/03/2019.
@@ -21,8 +23,8 @@ public class ServoController implements InputHandler<String> {
     private volatile boolean ready = false;
     private COMPortSerial port;
 
-    public ServoController(){
-        this.port = new COMPortSerial("COM4", 57600,"ServoController",this);
+    public ServoController(String comPort, int baudRate){
+        this.port = new COMPortSerial(comPort, baudRate,"ServoController",this);
     }
 
     public boolean isReady(){
@@ -73,11 +75,23 @@ public class ServoController implements InputHandler<String> {
         port.close();
     }
 
+    public void receiveAngleUpdate(int servonum, double newAngle){
+        //Do nothing
+    }
+
     @Override
     public void handle(String input) {
         if (input.toString().equals("Ready")){
             ready = true;
         }
-        System.out.println(input);
+        Matcher m = Pattern.compile("s([\\d]+)a([\\d\\.]+)").matcher(input.trim());
+        if (m.matches()){ //Have been sent an updated servo angle
+            int servoNum = Integer.parseInt(m.group(1));
+            double d = Double.parseDouble(m.group(2));
+            receiveAngleUpdate(servoNum,d);
+        }
+        else {
+            System.out.println(input);
+        }
     }
 }

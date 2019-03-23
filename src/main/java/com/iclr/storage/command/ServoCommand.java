@@ -9,6 +9,7 @@ import java.util.Map;
 public abstract class ServoCommand<T> {
     private static Map<String,Byte> commandMap = new HashMap<String,Byte>();
     private static Map<Byte,String> inverseCommandMap = new HashMap<Byte,String>();
+    private static Map<String,ServoCommandInterpreter> commandInterpreterMap = new HashMap<>();
 
     protected int servonum;
     protected T commandArg;
@@ -29,11 +30,25 @@ public abstract class ServoCommand<T> {
         return commandMap.containsKey(commandLabel);
     }
 
-    public ServoCommand(){
-        this(true);
+    public static ServoCommandInterpreter getCommandInterpreter(String commandLabel){
+        return commandInterpreterMap.get(commandLabel);
     }
 
-    public ServoCommand(boolean addToInverseMap){
+    public ServoCommand(ServoCommandInterpreter<T> commandInterpreter){
+        this(true,commandInterpreter);
+    }
+
+    public static interface ServoCommandInterpreter<S> {
+        public ServoCommand<S> interpretCommand(int servoNum,String commandArgRaw, Object... otherParams) throws ServoCommandSyntaxException;
+    }
+
+    public static class ServoCommandSyntaxException extends Exception {
+        public ServoCommandSyntaxException(String msg){
+            super(msg);
+        }
+    }
+
+    public ServoCommand(boolean addToInverseMap,ServoCommandInterpreter<T> commandInterpreter){
         if (getCommandID() > 15){
             throw new RuntimeException("Servo command has invalid ID! Max is 15");
         }
@@ -42,6 +57,7 @@ public abstract class ServoCommand<T> {
         }
         if(!commandMap.containsKey(getCommandLabel())) {
             commandMap.put(getCommandLabel(), getCommandID());
+            commandInterpreterMap.put(getCommandLabel(),commandInterpreter);
             if (addToInverseMap) {
                 inverseCommandMap.put(getCommandID(), getCommandLabel());
             }

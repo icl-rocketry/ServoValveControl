@@ -6,7 +6,12 @@ package com.iclr.storage.command;
 public class ServoNullCommand extends ServoCommand<Double> {
 
     public ServoNullCommand(int servoNum){
-        super();
+        super(new ServoCommandInterpreter<Double>() {
+            @Override
+            public ServoCommand<Double> interpretCommand(int servoNumber,String commandArgRaw,Object... otherParams) throws ServoCommandSyntaxException {
+                return new ServoNullCommand(servoNumber);
+            }
+        });
         this.servonum = servoNum;
     }
 

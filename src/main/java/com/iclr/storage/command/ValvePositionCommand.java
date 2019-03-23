@@ -11,7 +11,23 @@ public class ValvePositionCommand extends ServoCommand<Double> implements Clonea
      * @param angle desired angle, 0 is open and 90 is closed
      */
     public ValvePositionCommand(int servoNum, double angle){
-        super(false);
+        super(false, new ServoCommandInterpreter<Double>() {
+            @Override
+            public ServoCommand<Double> interpretCommand(int servoNum, String commandArgRaw, Object... otherParams) throws ServoCommandSyntaxException {
+                try {
+                    double angle = Double.parseDouble(commandArgRaw);
+                    if (angle > 90){
+                        throw new ServoCommandSyntaxException("Specified valve angle '"+commandArgRaw+"' is greater than max allowable (90)!");
+                    }
+                    if (angle < 0){
+                        throw new ServoCommandSyntaxException("Specified valve angle '"+commandArgRaw+"' is not allowed to be negative!");
+                    }
+                    return new ValvePositionCommand(servoNum,angle);
+                } catch (NumberFormatException e) {
+                    throw new ServoCommandSyntaxException("Specified valve angle '"+commandArgRaw+"' is not a valid double (number)!");
+                }
+            }
+        });
         this.servonum = servoNum;
         this.commandArg = angle;
     }

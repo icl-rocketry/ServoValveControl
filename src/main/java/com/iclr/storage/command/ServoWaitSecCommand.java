@@ -5,7 +5,23 @@ package com.iclr.storage.command;
  */
 public class ServoWaitSecCommand extends ServoCommand<Long> {
     public ServoWaitSecCommand(int servoNum, long time){
-        super();
+        super(new ServoCommandInterpreter<Long>() {
+            @Override
+            public ServoCommand<Long> interpretCommand(int servoNum, String commandArgRaw, Object... otherParams) throws ServoCommandSyntaxException {
+                try {
+                    long l = Long.parseLong(commandArgRaw);
+                    if (l < 0){
+                        throw new NumberFormatException();
+                    }
+                    if (l > 65535){
+                        throw new ServoCommandSyntaxException("Specified wait time '"+commandArgRaw+"' is too large to express with a 16 bit int! Use multiple wait commands instead!");
+                    }
+                    return new ServoWaitSecCommand(servoNum,l);
+                } catch (NumberFormatException e) {
+                    throw new ServoCommandSyntaxException("Specified wait time '"+commandArgRaw+"' is not a valid wait time (large integer)!");
+                }
+            }
+        });
         this.servonum = servoNum;
         this.commandArg = time;
     }

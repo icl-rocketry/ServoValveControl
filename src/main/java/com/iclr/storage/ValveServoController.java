@@ -13,10 +13,10 @@ import java.util.Arrays;
 public class ValveServoController extends ServoController {
     private ServoValveLinkage[] linkages;
     private double[] valveHandleDeadAnglesDeg; //Angle which handle can turn without any motion of the actual ball inside the valve
-    private double[] currentServoAngles; //Current servo angles of every valve, TODO: Populate with data from servo controller
+    private double[] currentServoAngles; //Current servo angles of every valve
     private double[] currentServoAngleOffsets; //Current offsets of servo angles for every valve
-    public ValveServoController(ServoValveLinkage[] linkages, double[] valveHandleDeadAnglesDeg){
-        super();
+    public ValveServoController(String comPort, int baudRate, ServoValveLinkage[] linkages, double[] valveHandleDeadAnglesDeg){
+        super(comPort, baudRate);
         this.linkages = linkages;
         this.valveHandleDeadAnglesDeg = valveHandleDeadAnglesDeg;
         this.currentServoAngles = new double[this.linkages.length];
@@ -68,6 +68,12 @@ public class ValveServoController extends ServoController {
         }
         currentServoAngleOffsets = prevServoOffsets; //Update offsets for when next command list sent
         super.sendCommands(commands);
+    }
+
+    @Override
+    public void receiveAngleUpdate(int servoNum,double newAngle){
+        System.out.println("Servo "+servoNum+" now at "+newAngle+" degrees");
+        currentServoAngles[servoNum] = newAngle;
     }
 
     public double getLastKnownServoAngle(int servoNum){
