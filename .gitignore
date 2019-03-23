@@ -1,0 +1,50 @@
+# IDE stuff
+.classpath
+.project
+.settings
+.idea/
+out/
+
+# Gradle stuff
+/gradle
+/.gradle
+/build
+
+# Our stuff
+/result
+/temp
+data.properties
+
+/.classpath
+/.project
+/.settings
+
+
+# netbeans
+/nbproject
+
+# we use maven!
+/build.xml
+
+# maven
+/target
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+/build
+/bin
+/dist
+/manifest.mf
+
+/world
+
+# Mac filesystem dust
+/.DS_Store
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/

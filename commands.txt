@@ -1,0 +1,5 @@
+servo 0 0.0
+waitMillis 0 1500
+servo 0 90.0
+waitSec 0 2
+servo 0 180
