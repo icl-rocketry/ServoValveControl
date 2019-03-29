@@ -1,0 +1,20 @@
+% Hi I am an example of how to specify what a servo valve needs to do
+% Any line starting with a % is a comment
+% Servos work through their command lists in parallel
+
+servoNum 0 %Specify commands for servo 0
+
+% The line below is ignored as it has a comment at the start
+servoAngle 0 %Move servo 0 to 0 degrees
+waitSec 5
+servoAngle 180
+waitSec 5
+servoAngle 0
+
+%valveAngle 90 %Move servo 0 so the valve it controls is at 90 degrees (CLOSED fully)
+%waitMillis 1500 %Wait 1.5 sec, can only specify a max value of 65535 to wait millis
+%valveAngle 0 %Move servo 0 so the valve it controls is at 0 degrees (OPEN fully)
+%waitSec 2 %Wait 2 sec, can only specify a max value of 65535 to wait sec. For longer use waitSec twice
+%valveAngle 45 %Move servo 0 so the valve it controls is halfway open
+%waitSec 2
+%valveAngle 90 %Close the valve again

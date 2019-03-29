@@ -66,7 +66,7 @@ public class CommandInterpreter {
             }
             ServoCommand sc = null;
             try {
-                sc = ServoCommand.getCommandInterpreter(cmdLabel).interpretCommand(servoNum,operandRaw,180);
+                sc = ServoCommand.getCommandInterpreter(cmdLabel).interpretCommand(servoNum,operandRaw,180.0d);
             } catch (ServoCommand.ServoCommandSyntaxException e) {
                 throw new ServoCommand.ServoCommandSyntaxException("Error interpreting command on line "+i+": \n"+e.getMessage());
             }

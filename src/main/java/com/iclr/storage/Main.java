@@ -75,10 +75,10 @@ public class Main {
     public static void main(String[] args) {
         FourBarLinkage fbl = new FourBarLinkage(0.96,0.95,0.5,1.4);
         //ServoValveLinkage svl = new ServoValveLinkage(0.96,0.95,0.5,1.4,217, ServoValveLinkage.ValveCloseHandleRotationDirection.TOWARDS_SERVO, ServoValveLinkage.ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE,0);
-        ServoValveLinkage svl = new ServoValveLinkage(57.6,57.5,29,83,217, ServoValveLinkage.ValveCloseHandleRotationDirection.TOWARDS_SERVO, ServoValveLinkage.ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE,0);
+        ServoValveLinkage svl = new ServoValveLinkage(55.02,56.42,28.8,82.62,224.5, ServoValveLinkage.ValveCloseHandleRotationDirection.TOWARDS_SERVO, ServoValveLinkage.ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE,0);
         //double valveAngle = svl.getValveAngleForGivenServoAngleDeg(servoAngle);
 
-        ServoController servoManualControl = new ValveServoController("COM4", 57600,new ServoValveLinkage[]{svl},new double[]{1.364});
+        ServoController servoManualControl = new ValveServoController("COM7", 57600,new ServoValveLinkage[]{svl},new double[]{1.364});
         //ServoCommand cmd = new ServoPositionCommand(0,180,180);
 
         ServoCommand[] cmds = null;
