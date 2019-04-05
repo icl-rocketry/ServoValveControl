@@ -2,7 +2,7 @@
 % Any line starting with a % is a comment
 % Servos work through their command lists in parallel
 
-servoNum 0 %Specify commands for servo 0
+servoNum 0 %Specify commands for servo 0 to do
 
 % The line below is ignored as it has a comment at the start
 % servoAngle 10 %Move servo 0 to 10 degrees

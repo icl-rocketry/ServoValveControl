@@ -29,6 +29,8 @@ dependencies {
     //compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
     compile name: 'RXTXcomm'
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.fxmisc.richtext', name: 'richtextfx', version: '0.9.3'
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
 }
 
 jar {
@@ -45,5 +47,7 @@ shadowJar {
     classifier ''
     dependencies {
         include(dependency(':RXTXcomm'))
+        include(dependency('org.fxmisc.richtext:richtextfx'))
+        include(dependency('commons-io:commons-io'))
     }
 }

@@ -43,7 +43,7 @@ public class CommandInterpreter {
             }
             Matcher m = commandLinePattern.matcher(line.trim());
             if(!m.matches()){
-                throw new ServoCommand.ServoCommandSyntaxException("Line "+i+" does not match correct formatting!");
+                throw new ServoCommand.ServoCommandSyntaxException("Line "+(i+1)+" does not match correct formatting!");
             }
             String cmdLabel = m.group(1);
             String operandRaw = m.group(2);
@@ -54,7 +54,7 @@ public class CommandInterpreter {
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e) {
-                    throw new ServoCommand.ServoCommandSyntaxException("Invalid servo number '"+servoNum+"' specified on line "+i);
+                    throw new ServoCommand.ServoCommandSyntaxException("Invalid servo number '"+servoNum+"' specified on line "+(i+1));
                 }
                 continue;
             }
@@ -62,13 +62,13 @@ public class CommandInterpreter {
                 throw new ServoCommand.ServoCommandSyntaxException("Commands are specified before specifying a servo for them to apply to!");
             }
             if(!ServoCommand.commandExists(cmdLabel)){
-                throw new ServoCommand.ServoCommandSyntaxException("Error command '"+cmdLabel+"' specified on line "+i+" does not exist!");
+                throw new ServoCommand.ServoCommandSyntaxException("Error command '"+cmdLabel+"' specified on line "+(i+1)+" does not exist!");
             }
             ServoCommand sc = null;
             try {
                 sc = ServoCommand.getCommandInterpreter(cmdLabel).interpretCommand(servoNum,operandRaw,180.0d);
             } catch (ServoCommand.ServoCommandSyntaxException e) {
-                throw new ServoCommand.ServoCommandSyntaxException("Error interpreting command on line "+i+": \n"+e.getMessage());
+                throw new ServoCommand.ServoCommandSyntaxException("Error interpreting command on line "+(i+1)+": \n"+e.getMessage());
             }
             cmds.add(sc);
         }

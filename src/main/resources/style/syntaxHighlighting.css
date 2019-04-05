@@ -1,0 +1,11 @@
+.comment {
+	-fx-fill: green;
+}
+
+.cmd {
+	-fx-fill: blue;
+}
+
+.arg {
+	-fx-fill: red;
+}

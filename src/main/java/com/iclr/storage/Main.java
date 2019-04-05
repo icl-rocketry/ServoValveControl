@@ -1,18 +1,25 @@
 package com.iclr.storage;
 
 import com.iclr.storage.command.*;
+import com.iclr.storage.gui.controller.MainGUIController;
 import com.iclr.storage.linkage.FourBarLinkage;
 import com.iclr.storage.linkage.ServoValveLinkage;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Edward on 21/03/2019.
  */
-public class Main {
+public class Main extends Application {
     static {
         if(1==0) {
             try {
@@ -52,6 +59,13 @@ public class Main {
         }*/
     }
 
+    private ExecutorService executorService;
+    public static Main instance;
+
+    public Main() {
+        instance = this;
+    }
+
     private static void loadLib(String path, String resPath, String name) throws IOException {
         name = name + ".dll";
         File fileOut = new File(path + File.separator + "libs" + File.separator+name);
@@ -72,8 +86,14 @@ public class Main {
         }
     }
 
+    public static void doInUIThread(Runnable run){
+        Platform.runLater(run);
+    }
+
     public static void main(String[] args) {
-        FourBarLinkage fbl = new FourBarLinkage(0.96,0.95,0.5,1.4);
+        CommandInterpreter.init();
+        launch();
+        /*FourBarLinkage fbl = new FourBarLinkage(0.96,0.95,0.5,1.4);
         //ServoValveLinkage svl = new ServoValveLinkage(0.96,0.95,0.5,1.4,217, ServoValveLinkage.ValveCloseHandleRotationDirection.TOWARDS_SERVO, ServoValveLinkage.ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE,0);
         ServoValveLinkage svl = new ServoValveLinkage(55.02,56.42,28.8,82.62,224.5, ServoValveLinkage.ValveCloseHandleRotationDirection.TOWARDS_SERVO, ServoValveLinkage.ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE,0);
         //double valveAngle = svl.getValveAngleForGivenServoAngleDeg(servoAngle);
@@ -103,6 +123,30 @@ public class Main {
             e.printStackTrace();
         } finally {
             servoManualControl.closePort();
-        }
+        }*/
+    }
+
+    public void init(){
+        executorService = Executors.newCachedThreadPool();
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run(){
+                executorService.shutdown();
+            }
+        });
+    }
+
+    public ExecutorService getExecutorService(){
+        return this.executorService;
+    }
+
+    public void terminate(){
+        this.executorService.shutdown();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.getIcons().add(new Image(Main.class.getClassLoader().getResourceAsStream("img/icon.png")));
+        MainGUIController.start(primaryStage);
     }
 }
