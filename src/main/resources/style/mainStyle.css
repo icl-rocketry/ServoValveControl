@@ -1,0 +1,10 @@
+.executeButton {
+	-fx-base: #5cef99;
+}
+
+/*
+.executeButton:pressed {
+    -fx-padding: 10 15 13 15;
+    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+*/

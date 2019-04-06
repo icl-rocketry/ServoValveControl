@@ -3,6 +3,7 @@ package com.iclr.storage;
 import com.iclr.storage.command.ServoCommand;
 import com.iclr.storage.command.ServoPositionCommand;
 import com.iclr.storage.command.ValvePositionCommand;
+import com.iclr.storage.linkage.ServoValveDefinition;
 import com.iclr.storage.linkage.ServoValveLinkage;
 
 import java.util.Arrays;
@@ -11,18 +12,16 @@ import java.util.Arrays;
  * Created by Edward on 22/03/2019.
  */
 public class ValveServoController extends ServoController {
-    private ServoValveLinkage[] linkages;
-    private double[] valveHandleDeadAnglesDeg; //Angle which handle can turn without any motion of the actual ball inside the valve
+    private ServoValveDefinition[] servoValves;
     private double[] currentServoAngles; //Current servo angles of every valve
     private double[] currentServoAngleOffsets; //Current offsets of servo angles for every valve
-    public ValveServoController(String comPort, int baudRate, ServoValveLinkage[] linkages, double[] valveHandleDeadAnglesDeg){
-        super(comPort, baudRate);
-        this.linkages = linkages;
-        this.valveHandleDeadAnglesDeg = valveHandleDeadAnglesDeg;
-        this.currentServoAngles = new double[this.linkages.length];
-        this.currentServoAngleOffsets = new double[this.linkages.length];
-        for(int i=0;i<this.linkages.length;i++){
-            this.currentServoAngles[i] = this.linkages[i].getServoClosedAngleDegrees(); //Assume valves start closed
+    public ValveServoController(String comPort, int baudRate, ServoValveDefinition[] servoValves, ConnectionStatusChangeListener<? extends ValveServoController> connectionStatusChangeListener){
+        super(comPort, baudRate, connectionStatusChangeListener);
+        this.servoValves = servoValves;
+        this.currentServoAngles = new double[this.servoValves.length];
+        this.currentServoAngleOffsets = new double[this.servoValves.length];
+        for(int i=0;i<this.servoValves.length;i++){
+            this.currentServoAngles[i] = this.servoValves[i].getServoValveLinkage().getServoClosedAngleDegrees(); //Assume valves start closed
         }
     }
 
@@ -35,18 +34,18 @@ public class ValveServoController extends ServoController {
             ServoCommand cmd = commands[i];
             if(cmd instanceof ValvePositionCommand){ //Swap valve position commands for servo position commands
                 double valveAngleDesired = ((ValvePositionCommand) cmd).getCommandArg(); //Desired valve angle
-                ServoValveLinkage svl = linkages[cmd.getServonum()]; //Use the linkage to relate servo and valve angles
+                ServoValveLinkage svl = servoValves[cmd.getServonum()].getServoValveLinkage(); //Use the linkage to relate servo and valve angles
                 double prevServoAngle = prevServoAngles[cmd.getServonum()]; //servo angle that the valve will have been set to before this command executes
                 double prevValveAngleDesired = svl.getValveAngleForGivenServoAngleDeg(prevServoAngle)-prevServoOffsets[cmd.getServonum()]; //Convert to valve angle and remove offset
                 if(prevServoOffsets[cmd.getServonum()] > 0){ //Valve has been increasing angle
                     if (valveAngleDesired < prevValveAngleDesired){
                         //Valve wants to switch directions to decreasing angle
-                        prevServoOffsets[cmd.getServonum()] = -0.5*valveHandleDeadAnglesDeg[cmd.getServonum()];
+                        prevServoOffsets[cmd.getServonum()] = -0.5*servoValves[cmd.getServonum()].getServoHandleDeadAngleDegrees();
                     }
                 } else { //Valve has been decreasing angle
                     if (valveAngleDesired > prevValveAngleDesired){
                         //Valve wants to switch directions to increasing angle
-                        prevServoOffsets[cmd.getServonum()] = +0.5*valveHandleDeadAnglesDeg[cmd.getServonum()];
+                        prevServoOffsets[cmd.getServonum()] = +0.5*servoValves[cmd.getServonum()].getServoHandleDeadAngleDegrees();
                     }
                 }
 
@@ -80,11 +79,7 @@ public class ValveServoController extends ServoController {
         return currentServoAngles[servoNum];
     }
 
-    public ServoValveLinkage[] getLinkages() {
-        return linkages;
-    }
-
-    public double[] getValveHandleDeadAnglesDeg() {
-        return valveHandleDeadAnglesDeg;
+    public ServoValveDefinition[] getServoValves() {
+        return this.servoValves;
     }
 }

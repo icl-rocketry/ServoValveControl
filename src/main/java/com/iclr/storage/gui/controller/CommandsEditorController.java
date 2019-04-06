@@ -48,6 +48,17 @@ public class CommandsEditorController {
         initCodeProcessing();
     }
 
+    public ServoCommand[] getCommandsWithUserFriendlyValidate() throws ServoCommand.ServoCommandSyntaxException {
+        try {
+            return CommandInterpreter.extractCommands(getLines().toArray(new String[]{}));
+        } catch (ServoCommand.ServoCommandSyntaxException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
+            alert.setHeaderText("Error parsing commands file!");
+            alert.showAndWait();
+            throw e;
+        }
+    }
+
     public void initCodeProcessing(){
         this.parentGUI.getCodeValidateButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override

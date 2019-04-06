@@ -22,9 +22,12 @@ import java.util.regex.Pattern;
 public class ServoController implements InputHandler<String> {
     private volatile boolean ready = false;
     private COMPortSerial port;
+    private ConnectionStatusChangeListener connectionStatusChangeListener;
 
-    public ServoController(String comPort, int baudRate){
+    public ServoController(String comPort, int baudRate, ConnectionStatusChangeListener<? extends ServoController> connectionStatusChangeListener){
         this.port = new COMPortSerial(comPort, baudRate,"ServoController",this);
+        this.connectionStatusChangeListener = connectionStatusChangeListener;
+        this.connectionStatusChangeListener.onStatusChange(this);
     }
 
     public boolean isReady(){
@@ -48,31 +51,31 @@ public class ServoController implements InputHandler<String> {
         }
     }
 
-    public void openPort(){
-        try {
-            System.out.println("Opening COM port...");
-            port.openPort();
-            System.out.println("Port opened");
-            long l = System.currentTimeMillis();
-            while (!ready && System.currentTimeMillis()-l < 10000){
+    public boolean isConnected(){
+        return this.port.getCurrentlyOpenPort() != null;
+    }
+
+    public void openPort() throws PortInUseException, IOException, UnsupportedCommOperationException {
+        System.out.println("Opening COM port...");
+        port.openPort();
+        System.out.println("Port opened");
+        connectionStatusChangeListener.onStatusChange(this);
+        long l = System.currentTimeMillis();
+        while (!ready && System.currentTimeMillis()-l < 10000){
+            try {
                 Thread.sleep(100); //Wait for servo code to init on arduino and report it is ready, or 10 sec
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
             /*port.writeToPort("90\n".getBytes());
             Thread.sleep(2000);
             port.writeToPort("0\n".getBytes());*/
-        } catch (UnsupportedCommOperationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PortInUseException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void closePort(){
         port.close();
+        connectionStatusChangeListener.onStatusChange(this);
     }
 
     public void receiveAngleUpdate(int servonum, double newAngle){
@@ -83,6 +86,7 @@ public class ServoController implements InputHandler<String> {
     public void handle(String input) {
         if (input.toString().equals("Ready")){
             ready = true;
+            connectionStatusChangeListener.onStatusChange(this);
         }
         Matcher m = Pattern.compile("s([\\d]+)a([\\d\\.]+)").matcher(input.trim());
         if (m.matches()){ //Have been sent an updated servo angle

@@ -29,8 +29,13 @@ dependencies {
     //compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
     compile name: 'RXTXcomm'
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile group: 'org.fxmisc.richtext', name: 'richtextfx', version: '0.9.3'
+    compile group: 'org.fxmisc.richtext', name: 'richtextfx', version: '0.9.3', transitive: true
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+    compile group: 'org.fxmisc.flowless', name: 'flowless', version: '0.6.1'
+    compile group: 'org.reactfx', name: 'reactfx', version: '1.0.0'
+    compile group: 'org.fxmisc.undo', name: 'undofx', version: '1.3.0'
+    compile group: 'org.fxmisc.wellbehaved', name: 'wellbehavedfx', version: '0.3.3'
 }
 
 jar {
@@ -49,5 +54,10 @@ shadowJar {
         include(dependency(':RXTXcomm'))
         include(dependency('org.fxmisc.richtext:richtextfx'))
         include(dependency('commons-io:commons-io'))
+        include(dependency('com.google.code.gson:gson'))
+        include(dependency('org.fxmisc.flowless:flowless'))
+        include(dependency('org.reactfx:reactfx'))
+        include(dependency('org.fxmisc.undo:undofx'))
+        include(dependency('org.fxmisc.wellbehaved:wellbehavedfx'))
     }
 }

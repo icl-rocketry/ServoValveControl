@@ -28,8 +28,12 @@ public class COMPortSerial {
     }
 
     public void openPort() throws PortInUseException, IOException, UnsupportedCommOperationException {
+        CommPortIdentifier identifier = findComPort();
+        if(identifier == null){
+            throw new IOException("COM Port not found");
+        }
         this.openPort = (SerialPort)
-                findComPort().open(this.appName, 2000);
+                identifier.open(this.appName, 2000);
         outputStream = openPort.getOutputStream();
         inputStream = openPort.getInputStream();
         openPort.setSerialPortParams(this.baudRate,
@@ -101,6 +105,11 @@ public class COMPortSerial {
     }
 
     public CommPortIdentifier findComPort(){
+        try {
+            return CommPortIdentifier.getPortIdentifier(this.comIdentifier);
+        } catch (NoSuchPortException e) {
+            //Oh well, just search instead
+        }
         Enumeration portList = CommPortIdentifier.getPortIdentifiers();
         while (portList.hasMoreElements()) {
             CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();

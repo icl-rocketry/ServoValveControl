@@ -1,5 +1,6 @@
 package com.iclr.storage.linkage;
 
+import com.google.gson.annotations.SerializedName;
 import com.iclr.storage.util.ClampAngle;
 
 /**
@@ -7,9 +8,13 @@ import com.iclr.storage.util.ClampAngle;
  * See https://synthetica.eng.uci.edu/mechanicaldesign101/McCarthyNotes-2.pdf
  */
 public class FourBarLinkage {
+    @SerializedName("distanceBetweenPivots")
     private double g = 0.96; //Distance between pivots
+    @SerializedName("lengthOfBarConnectedToValve")
     private double b = 0.95; //Length of bar connected to right pivot
+    @SerializedName("lengthOfBarConnectedToServo")
     private double a = 0.5; //Length of bar connected to left pivot
+    @SerializedName("lengthOfConnectingBar")
     private double h = 1.4; //Length of bar connecting the other two bars
 
     public FourBarLinkage(double distanceBetweenPivots,double lengthOfRightPivotBar,double lengthOfLeftPivotBar,double lengthOfConnectingBar){
