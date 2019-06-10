@@ -2,6 +2,7 @@ package com.iclr.storage;
 
 import com.iclr.storage.command.CommandEncoder;
 import com.iclr.storage.command.ServoCommand;
+import com.iclr.storage.logging.Logger;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -56,9 +57,9 @@ public class ServoController implements InputHandler<String> {
     }
 
     public void openPort() throws PortInUseException, IOException, UnsupportedCommOperationException {
-        System.out.println("Opening COM port...");
+        Logger.println("Opening COM port...");
         port.openPort();
-        System.out.println("Port opened");
+        Logger.println("Port opened");
         connectionStatusChangeListener.onStatusChange(this);
         long l = System.currentTimeMillis();
         while (!ready && System.currentTimeMillis()-l < 10000){
@@ -95,7 +96,7 @@ public class ServoController implements InputHandler<String> {
             receiveAngleUpdate(servoNum,d);
         }
         else {
-            System.out.println(input);
+            Logger.debug(input);
         }
     }
 }

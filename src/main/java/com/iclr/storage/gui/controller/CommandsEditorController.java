@@ -167,7 +167,6 @@ public class CommandsEditorController {
     }
 
     protected void initMenuBarHandling(){
-        this.parentGUI.getEditorMenubar();
         MenuItem openMenuItem = new MenuItem("Open");
         openMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override

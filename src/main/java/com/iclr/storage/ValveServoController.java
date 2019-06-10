@@ -5,6 +5,7 @@ import com.iclr.storage.command.ServoPositionCommand;
 import com.iclr.storage.command.ValvePositionCommand;
 import com.iclr.storage.linkage.ServoValveDefinition;
 import com.iclr.storage.linkage.ServoValveLinkage;
+import com.iclr.storage.logging.Logger;
 
 import java.util.Arrays;
 
@@ -71,7 +72,7 @@ public class ValveServoController extends ServoController {
 
     @Override
     public void receiveAngleUpdate(int servoNum,double newAngle){
-        System.out.println("Servo "+servoNum+" now at "+newAngle+" degrees");
+        Logger.println(Logger.LogEntry.Severity.HIGH,"Servo "+servoNum+" now at "+newAngle+" degrees");
         currentServoAngles[servoNum] = newAngle;
     }
 

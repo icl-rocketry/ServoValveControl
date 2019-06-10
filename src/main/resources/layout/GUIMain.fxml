@@ -97,9 +97,13 @@
                                  </children>
                               </VBox>
                            </children></AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                      <AnchorPane fx:id="rightPane" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
-                              <Label wrapText="true" text="TODO: Show output sent by arduino about valves (position) and allow manual control (type in angle) here..." />
+                               <VBox fx:id="rightSideVbox" fillWidth="true" minHeight="1">
+                                   <children>
+                                  <!--     <Label wrapText="true" text="TODO: Show output sent by arduino about valves (position) and allow manual control (type in angle) here..." />-->
+                                   </children>
+                               </VBox>
                            </children></AnchorPane>
                     </items>
                   </SplitPane>

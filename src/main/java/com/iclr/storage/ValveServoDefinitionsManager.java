@@ -3,6 +3,7 @@ package com.iclr.storage;
 import com.google.gson.*;
 import com.iclr.storage.linkage.ServoValveDefinition;
 import com.iclr.storage.linkage.ServoValveLinkage;
+import com.iclr.storage.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class ValveServoDefinitionsManager {
                 ServoValveDefinition definition = gson.fromJson(el,ServoValveDefinition.class);
                 this.valveServoDefinitionList.add(definition);
             }
-            System.out.println("Loaded "+this.valveServoDefinitionList.size()+" definitions of servo valves");
+            Logger.println("Loaded "+this.valveServoDefinitionList.size()+" definitions of servo valves");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,3 +9,23 @@
 .arg {
 	-fx-fill: red;
 }
+
+.log_severe {
+    -fx-fill: red;
+}
+
+.log_normal {
+}
+
+.log_low {
+    -fx-fill: gray;
+}
+
+.log_high {
+    -fx-fill: black;
+    -fx-font-weight: bold;
+}
+
+.log_debug {
+    -fx-fill: blue;
+}

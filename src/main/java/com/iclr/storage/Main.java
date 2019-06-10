@@ -8,6 +8,8 @@ import com.iclr.storage.gui.controller.MainGUIController;
 import com.iclr.storage.linkage.FourBarLinkage;
 import com.iclr.storage.linkage.ServoValveDefinition;
 import com.iclr.storage.linkage.ServoValveLinkage;
+import com.iclr.storage.logging.FileLogger;
+import com.iclr.storage.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -18,6 +20,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -88,6 +91,34 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        Logger.getInstance().attachListener(new Logger.LogListener() {
+            @Override
+            public void onLogClear() {
+
+            }
+
+            @Override
+            public void onLogEntryAdd(Logger.LogEntry line) {
+                System.out.println(line.toString());
+            }
+
+            @Override
+            public void onAttach(List<Logger.LogEntry> previouslyLogged) {
+
+            }
+        });
+        try {
+            final FileLogger fl = new FileLogger(new File("log.txt"));
+            Logger.getInstance().attachListener(fl);
+            Runtime.getRuntime().addShutdownHook(new Thread(){
+                @Override
+                public void run(){
+                    fl.close();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         loadRXTXLibrary();
         CommandInterpreter.init();
         launch();
