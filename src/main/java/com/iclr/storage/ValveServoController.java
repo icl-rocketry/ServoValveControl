@@ -35,7 +35,13 @@ public class ValveServoController extends ServoController {
             ServoCommand cmd = commands[i];
             if(cmd instanceof ValvePositionCommand){ //Swap valve position commands for servo position commands
                 double valveAngleDesired = ((ValvePositionCommand) cmd).getCommandArg(); //Desired valve angle
-                ServoValveLinkage svl = servoValves[cmd.getServonum()].getServoValveLinkage(); //Use the linkage to relate servo and valve angles
+                ServoValveLinkage svl = null; //Use the linkage to relate servo and valve angles
+                try {
+                    svl = servoValves[cmd.getServonum()].getServoValveLinkage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Logger.error("Error, servo valve "+cmd.getServonum()+" not defined");
+                }
                 double prevServoAngle = prevServoAngles[cmd.getServonum()]; //servo angle that the valve will have been set to before this command executes
                 double prevValveAngleDesired = svl.getValveAngleForGivenServoAngleDeg(prevServoAngle)-prevServoOffsets[cmd.getServonum()]; //Convert to valve angle and remove offset
                 if(prevServoOffsets[cmd.getServonum()] > 0){ //Valve has been increasing angle
@@ -73,7 +79,9 @@ public class ValveServoController extends ServoController {
     @Override
     public void receiveAngleUpdate(int servoNum,double newAngle){
         Logger.println(Logger.LogEntry.Severity.HIGH,"Servo "+servoNum+" now at "+newAngle+" degrees");
-        currentServoAngles[servoNum] = newAngle;
+        if(servoNum < currentServoAngles.length) {
+            currentServoAngles[servoNum] = newAngle;
+        }
     }
 
     public double getLastKnownServoAngle(int servoNum){

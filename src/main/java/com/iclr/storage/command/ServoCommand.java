@@ -1,5 +1,7 @@
 package com.iclr.storage.command;
 
+import com.iclr.storage.logging.Logger;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +79,7 @@ public abstract class ServoCommand<T> {
         if(cmdArg > 65535 || cmdArg < 0){
             throw new RuntimeException("Encoding only allows for command arg to be a 16 bit unsigned int (max val 65535)");
         }
-        byte firstByte = (byte) (servonum << 4 | getCommandID()); //Servo num MSB is byte MSB, command enc LSB is byte LSB
+        byte firstByte = (byte) (servonum << 4 | (getCommandID())); //Servo num MSB is byte MSB, command enc LSB is byte LSB
         byte secondByte = (byte) (((cmdArg & 0xFF00) >> 8)); //First 8 bits of the encoded angle put into an 8 bit byte
         byte thirdByte = (byte) (cmdArg & 0xFF); //Last 8 bits of the encoded angle
         return new byte[]{firstByte,secondByte,thirdByte};

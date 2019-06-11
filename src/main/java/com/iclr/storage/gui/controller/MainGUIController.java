@@ -9,6 +9,7 @@ import com.iclr.storage.linkage.ServoValveDefinition;
 import com.iclr.storage.logging.Logger;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -45,6 +46,7 @@ import java.util.regex.Pattern;
 public class MainGUIController {
     static double OPENING_FRACTION_OF_SCREEN_HEIGHT = 0.75;
     static double ASPECT_RATIO = 16.0/9.0; //Width/Height - Starting aspect ratio before user resizes
+    static MainGUIController instance;
 
     @FXML
     protected SplitPane splitPane;
@@ -84,6 +86,10 @@ public class MainGUIController {
     protected Button commandExecuteButton;
     private StyleClassedTextArea loggingTextArea;
 
+    public MainGUIController(){
+        instance = this;
+    }
+
     public static Stage stage;
 
     private CommandsEditorController commandsEditorController;
@@ -100,16 +106,26 @@ public class MainGUIController {
         return this.editorToolbar;
     }
 
-    public void appendTextToLoggingPane(String text){
-        if(loggingTextArea != null) {
-            loggingTextArea.appendText(text);
-        }
+    public void appendTextToLoggingPane(final String text){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(loggingTextArea != null) {
+                    loggingTextArea.appendText(text);
+                }
+            }
+        });
     }
 
     public void clearTextLoggingPane(){
-        if(loggingTextArea != null) {
-            loggingTextArea.clear();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(loggingTextArea != null) {
+                    loggingTextArea.clear();
+                }
+            }
+        });
     }
 
     public static void start(Stage primaryStage) throws IOException {
@@ -146,6 +162,9 @@ public class MainGUIController {
             @Override
             public void handle(WindowEvent event) {
                 Main.instance.terminate();
+                if (MainGUIController.instance != null && MainGUIController.instance.valveServoController != null){
+                    MainGUIController.instance.valveServoController.closePort();
+                }
             }
         });
     }
@@ -311,16 +330,21 @@ public class MainGUIController {
                     valveServoController = new ValveServoController(COMPort, baudRate, Main.instance.getValveServoDefinitionsManager().getValveServoDefinitionList().toArray(new ServoValveDefinition[]{}), new ConnectionStatusChangeListener<ValveServoController>() {
                         @Override
                         public void onStatusChange(ValveServoController controller) {
-                            connectionStatusLabel.setText("Status: "+(controller.isConnected()?(controller.isReady()?"Connected":"Connecting..."):"Disconnected"));
-                            if (!controller.isConnected()){
-                                connectionStatusIndicator.setFill(Paint.valueOf("#FF1F1F"));
-                            }
-                            else if(!controller.isReady()){
-                                connectionStatusIndicator.setFill(Paint.valueOf("#FFFF00"));
-                            }
-                            else if(controller.isReady()){
-                                connectionStatusIndicator.setFill(Paint.valueOf("#00FF00"));
-                            }
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    connectionStatusLabel.setText("Status: "+(controller.isConnected()?(controller.isReady()?"Connected":"Connecting..."):"Disconnected"));
+                                    if (!controller.isConnected()){
+                                        connectionStatusIndicator.setFill(Paint.valueOf("#FF1F1F"));
+                                    }
+                                    else if(!controller.isReady()){
+                                        connectionStatusIndicator.setFill(Paint.valueOf("#FFFF00"));
+                                    }
+                                    else if(controller.isReady()){
+                                        connectionStatusIndicator.setFill(Paint.valueOf("#00FF00"));
+                                    }
+                                }
+                            });
                         }
                     });
                     try {
