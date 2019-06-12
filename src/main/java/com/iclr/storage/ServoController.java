@@ -63,6 +63,8 @@ public class ServoController implements InputHandler<String> {
         connectionStatusChangeListener.onStatusChange(this);
         long l = System.currentTimeMillis();
         while (!ready && System.currentTimeMillis()-l < 10000){
+            port.writeToPort("isReady\n".getBytes(Charset.forName("ASCII")));
+            //System.out.println("Writing to port is ready");
             try {
                 Thread.sleep(100); //Wait for servo code to init on arduino and report it is ready, or 10 sec
             } catch (InterruptedException e) {
@@ -85,6 +87,7 @@ public class ServoController implements InputHandler<String> {
 
     @Override
     public void handle(String input) {
+       // System.out.println("S: "+input);
         if (input.toString().equals("Ready")){
             ready = true;
             connectionStatusChangeListener.onStatusChange(this);
