@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 public class ServoController implements InputHandler<String> {
     private volatile boolean ready = false;
-    private COMPortSerial port;
+    private volatile COMPortSerial port;
     private ConnectionStatusChangeListener connectionStatusChangeListener;
 
     public ServoController(String comPort, int baudRate, ConnectionStatusChangeListener<? extends ServoController> connectionStatusChangeListener){
@@ -62,11 +62,11 @@ public class ServoController implements InputHandler<String> {
         Logger.println("Port opened");
         connectionStatusChangeListener.onStatusChange(this);
         long l = System.currentTimeMillis();
-        while (!ready && System.currentTimeMillis()-l < 10000){
+        while (!ready && System.currentTimeMillis()-l < 100000 && isConnected()){
             port.writeToPort("isReady\n".getBytes(Charset.forName("ASCII")));
             //System.out.println("Writing to port is ready");
             try {
-                Thread.sleep(100); //Wait for servo code to init on arduino and report it is ready, or 10 sec
+                Thread.sleep(500); //Wait for servo code to init on arduino and report it is ready, or 10 sec
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -87,8 +87,11 @@ public class ServoController implements InputHandler<String> {
 
     @Override
     public void handle(String input) {
-       // System.out.println("S: "+input);
+        //System.out.println("S: "+input);
         if (input.toString().equals("Ready")){
+            if(!ready){
+                Logger.debug("Connection ready");
+            }
             ready = true;
             connectionStatusChangeListener.onStatusChange(this);
         }
@@ -99,7 +102,7 @@ public class ServoController implements InputHandler<String> {
             receiveAngleUpdate(servoNum,d);
         }
         else {
-            Logger.debug(input);
+            //Logger.debug(input);
         }
     }
 }

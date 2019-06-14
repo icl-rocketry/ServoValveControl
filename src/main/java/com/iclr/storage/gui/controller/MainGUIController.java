@@ -352,7 +352,20 @@ public class MainGUIController {
                         connectionStatusIndicator.setFill(Paint.valueOf("#ffff00"));
                         connectionBaudRateBox.setEditable(false);
                         connectionPortBox.setEditable(false);
-                        valveServoController.openPort();
+                        new Thread(){
+                            @Override
+                            public void run(){
+                                try {
+                                    valveServoController.openPort();
+                                } catch (PortInUseException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (UnsupportedCommOperationException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
                     } catch (Exception e) {
                         e.printStackTrace();
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Error connecting to port: "+e.getMessage(), ButtonType.OK);
