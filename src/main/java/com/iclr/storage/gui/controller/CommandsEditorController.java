@@ -219,7 +219,7 @@ public class CommandsEditorController {
         this.parentGUI.getEditorMenubar().getMenus().get(2).getItems().add(helpMeMenuItem);
     }
 
-    private static final Pattern SYNTAX_PATTERN = Pattern.compile("((?<cmd>[^\\s%]+)[\\s]+(?<arg>[^\\s%]+)[\\s]*([^\\s%]*?)[^%]*?(\\r\\n|\\r|\\n)?)|(?<comment>%.+(\\r\\n|\\r|\\n)?)");
+    private static final Pattern SYNTAX_PATTERN = Pattern.compile("((?<cmd>[^\\s%]+)[\\s]+(?<arg>[^\\s%]+)?[\\s]*([^\\s%]*?)[^%]*?(\\r\\n|\\r|\\n)?)|(?<comment>%.+(\\r\\n|\\r|\\n)?)");
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
 
@@ -233,8 +233,13 @@ public class CommandsEditorController {
                 spansBuilder.add(Collections.singleton("comment"), matcher.end() - matcher.start());
             }
             if(matcher.group("cmd") != null) {
-                spansBuilder.add(Collections.singleton("cmd"), matcher.start("arg")-matcher.start());
-                spansBuilder.add(Collections.singleton("arg"), matcher.end() - matcher.start("arg"));
+                if(matcher.group("arg") != null) {
+                    spansBuilder.add(Collections.singleton("cmd"), matcher.start("arg") - matcher.start());
+                    spansBuilder.add(Collections.singleton("arg"), matcher.end() - matcher.start("arg"));
+                }
+                else {
+                    spansBuilder.add(Collections.singleton("cmd"), matcher.end("cmd") - matcher.start());
+                }
             }
             lastKwEnd = matcher.end();
         }

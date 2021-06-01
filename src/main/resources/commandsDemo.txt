@@ -16,3 +16,7 @@ waitSec 2 %Wait 2 sec, can only specify a max value of 65535 to wait sec. For lo
 valveAngle 45 %Move servo 0 so the valve it controls is halfway open
 waitSec 2
 valveAngle 90 %Close the valve again
+restart %Make servo num 0 start from the beginning of it's command list again
+
+% servoNum 1 %Specify commands for servo 1 to do
+% valveAngle 90 %Move servo 1 so the valve it controls is at 90 degrees (CLOSED fully)

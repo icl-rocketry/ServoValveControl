@@ -24,6 +24,7 @@ public class CommandInterpreter {
         new ServoWaitSecCommand(0,0);
         new ValvePositionCommand(0,0);
         new ServoWaitSignalCommand(0, new ServoWaitSignalCommand.SignalTrigger(7, true));
+        new ServoRestartCommand(0);
     }
 
     public static ServoCommand[] extractCommands(File f) throws IOException, ServoCommand.ServoCommandSyntaxException {
@@ -31,7 +32,7 @@ public class CommandInterpreter {
     }
 
     public static ServoCommand[] extractCommands(String... lines) throws ServoCommand.ServoCommandSyntaxException {
-        Pattern commandLinePattern = Pattern.compile("([^\\s%]+)[\\s]+([^\\s%]+)[\\s]*([^\\s%]*).*");
+        Pattern commandLinePattern = Pattern.compile("([^\\s%]+)[\\s]+([^\\s%]+)?[\\s]*([^\\s%]*).*");
         List<ServoCommand> cmds = new ArrayList<>();
         int servoNum = -1;
         for(int i=0;i<lines.length;i++){
