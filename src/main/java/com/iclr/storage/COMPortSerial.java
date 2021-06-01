@@ -12,7 +12,7 @@ import java.util.Enumeration;
  */
 public class COMPortSerial {
     private String comIdentifier;
-    private int baudRate = 57600;
+    private int baudRate = 9600;
     private String appName;
     private volatile SerialPort openPort = null;
     private volatile OutputStream outputStream = null;

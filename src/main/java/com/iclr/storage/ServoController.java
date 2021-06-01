@@ -102,7 +102,14 @@ public class ServoController implements InputHandler<String> {
             receiveAngleUpdate(servoNum,d);
         }
         else {
-            //Logger.debug(input);
+            Matcher m1 = Pattern.compile("m(.+)").matcher(input.trim());
+            if(m1.matches()){
+                String message = m1.group(1);
+                Logger.println(message);
+            }
+            else {
+                Logger.debug(input);
+            }
         }
     }
 }

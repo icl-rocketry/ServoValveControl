@@ -39,7 +39,7 @@
                                    <Label text="Port:" />
                                    <TextField fx:id="connectionPortBox" prefColumnCount="3" promptText="COM4" text="COM4" />
                                    <Label text="Baud Rate:" />
-                                   <TextField fx:id="connectionBaudRateBox" prefColumnCount="4" promptText="57600" text="57600" />
+                                   <TextField fx:id="connectionBaudRateBox" prefColumnCount="4" promptText="9600" text="9600" />
                                    <Button fx:id="connectionConnectButton" mnemonicParsing="false" prefWidth="120" text="Connect" />
                                    <Label fx:id="connectionStatusLabel" text="Status: Disconnected">
                                    </Label>

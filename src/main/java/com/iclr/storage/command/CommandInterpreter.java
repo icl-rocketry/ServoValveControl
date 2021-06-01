@@ -23,6 +23,7 @@ public class CommandInterpreter {
         new ServoWaitMillisCommand(0,0);
         new ServoWaitSecCommand(0,0);
         new ValvePositionCommand(0,0);
+        new ServoWaitSignalCommand(0, new ServoWaitSignalCommand.SignalTrigger(7, true));
     }
 
     public static ServoCommand[] extractCommands(File f) throws IOException, ServoCommand.ServoCommandSyntaxException {
