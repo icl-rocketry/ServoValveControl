@@ -11,7 +11,6 @@ public class ServoValveLinkage {
     private double linkageServoAngleForClosedValveDegrees = 217; //Following the convention of the linkage
     private double linkageValveAngleForClosedDegrees; //In the linkage convention
     private double linkageValveAngleForOpenDegrees; //In the linkage convention
-    private double linkageServoAngleForOpenValveDegrees; //Following the convention of the linkage
     private double servoClosedAngleDegrees = 0; //Angle to tell servo to be at to have the valve closed
     private ServoAngleSignConvention servoAngleSignConvention = ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE;
     private ValveCloseHandleRotationDirection closeHandleRotationDirection = ValveCloseHandleRotationDirection.TOWARDS_SERVO;
@@ -38,7 +37,6 @@ public class ServoValveLinkage {
                 this.linkageValveAngleForOpenDegrees = this.linkageValveAngleForClosedDegrees + 90;
                 break;
         }
-        this.linkageServoAngleForOpenValveDegrees = this.linkage.getPossibleAnglesOfLeftLinkageDegrees(this.linkageValveAngleForOpenDegrees)[0];
         this.servoClosedAngleDegrees = servoClosedAngleDegrees;
         this.servoAngleSignConvention = servoAngleSignConvention;
     }
@@ -119,7 +117,7 @@ public class ServoValveLinkage {
     }
 
     public double getLinkageServoAngleForOpenValveDegrees() {
-        return linkageServoAngleForOpenValveDegrees;
+        return this.linkage.getPossibleAnglesOfLeftLinkageDegrees(this.linkageValveAngleForOpenDegrees)[0];
     }
 
     public double getServoClosedAngleDegrees(){
