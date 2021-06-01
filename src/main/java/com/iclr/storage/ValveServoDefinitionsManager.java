@@ -35,7 +35,9 @@ public class ValveServoDefinitionsManager {
         String jsonList = gson.toJson(ja);
         try {
             if(!this.definitionsFile.exists()){
-                this.definitionsFile.getParentFile().mkdirs();
+                if(this.definitionsFile.getParentFile() != null) {
+                    this.definitionsFile.getParentFile().mkdirs();
+                }
                 this.definitionsFile.createNewFile();
             }
             Files.write(definitionsFile.toPath(), Arrays.asList(new String[]{jsonList}), Charset.forName("UTF-8"));
@@ -46,7 +48,9 @@ public class ValveServoDefinitionsManager {
 
     public void loadDefinitions() {
         if (!this.definitionsFile.exists()) {
-            this.definitionsFile.getParentFile().mkdirs();
+            if (this.definitionsFile.getParentFile() != null) {
+                this.definitionsFile.getParentFile().mkdirs();
+            }
             //Write default
             ServoValveLinkage svl = new ServoValveLinkage(55.02, 56.42, 28.8, 82.62, 224.5, ServoValveLinkage.ValveCloseHandleRotationDirection.TOWARDS_SERVO, ServoValveLinkage.ServoAngleSignConvention.POSITIVE_TOWARDS_THE_VALVE, 0);
             this.valveServoDefinitionList.add(new ServoValveDefinition(svl, 0, 1.364));
