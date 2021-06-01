@@ -70,9 +70,9 @@ public class ServoValveLinkage {
             case POSITIVE_AWAY_FROM_VALVE:
                 switch (this.closeHandleRotationDirection){
                     case TOWARDS_SERVO:
-                        return ClampAngle.clampDeg(servoAngleDeg+this.linkageServoAngleForClosedValveDegrees-this.servoClosedAngleDegrees);
+                        return ClampAngle.clampDeg(servoAngleDeg-this.linkageServoAngleForClosedValveDegrees-this.servoClosedAngleDegrees);
                     case AWAY_FROM_SERVO:
-                        return ClampAngle.clampDeg(-(servoAngleDeg-this.linkageServoAngleForClosedValveDegrees-this.servoClosedAngleDegrees));
+                        return ClampAngle.clampDeg(-(servoAngleDeg-this.linkageServoAngleForClosedValveDegrees)-this.servoClosedAngleDegrees);
                 }
             case POSITIVE_TOWARDS_THE_VALVE:
                 switch (this.closeHandleRotationDirection){
