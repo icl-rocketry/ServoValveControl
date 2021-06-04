@@ -19,7 +19,7 @@ public class CommandInterpreter {
     public static void init(){
         //Create an instance of all the servo commands so they are added to the map needed to encode and decode them
         new ServoNullCommand(0);
-        new ServoPositionCommand(0,0,180);
+        new ServoPositionCommand(0,0);
         new ServoWaitMillisCommand(0,0);
         new ServoWaitSecCommand(0,0);
         new ValvePositionCommand(0,0);

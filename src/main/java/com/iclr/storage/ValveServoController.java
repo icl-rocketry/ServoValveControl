@@ -58,10 +58,10 @@ public class ValveServoController extends ServoController {
 
                 double servoAngle = svl.getAngleReqByServoForGivenValveAngleDeg(valveAngleDesired+prevServoOffsets[cmd.getServonum()]);
                 //Hackily keep in correct range
-                if (servoAngle > 180 && servoAngle < 190){
-                    servoAngle = 180;
+                if (servoAngle > 300 && servoAngle < 310){
+                    servoAngle = 300;
                 }
-                if (servoAngle > 180){
+                if (servoAngle > 300){
                     servoAngle -= 360;
                     if (servoAngle < 0 && servoAngle > -10){
                         servoAngle = 0;
@@ -69,7 +69,7 @@ public class ValveServoController extends ServoController {
                 }
                 prevServoAngles[cmd.getServonum()] = servoAngle; //Update the last servo angle so that subsequent commands are correct for this valve
                 //Convert to ServoPositionCommand
-                commands[i] = new ServoPositionCommand(cmd.getServonum(),servoAngle,180);
+                commands[i] = new ServoPositionCommand(cmd.getServonum(),servoAngle);
             }
         }
         currentServoAngleOffsets = prevServoOffsets; //Update offsets for when next command list sent
