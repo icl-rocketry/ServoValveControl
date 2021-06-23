@@ -1,13 +1,7 @@
 package com.iclr.storage;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.iclr.storage.command.*;
+import com.iclr.storage.command.CommandInterpreter;
 import com.iclr.storage.gui.controller.MainGUIController;
-import com.iclr.storage.linkage.FourBarLinkage;
-import com.iclr.storage.linkage.ServoValveDefinition;
-import com.iclr.storage.linkage.ServoValveLinkage;
 import com.iclr.storage.logging.FileLogger;
 import com.iclr.storage.logging.Logger;
 import javafx.application.Application;
@@ -15,11 +9,13 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,8 +47,17 @@ public class Main extends Application {
             fieldSysPath.setAccessible(true);
             fieldSysPath.set(null, null);
 
-            loadLib(runPath, "/rxtxParallel.dll", "rxtxParallel");
-            loadLib(runPath, "/rxtxSerial.dll", "rxtxSerial");
+            String architecture = System.getProperty("os.arch").toLowerCase();
+            boolean is64Bit = architecture.contains("64");
+
+            if(is64Bit){
+                loadLib(runPath, "/rxtxParallel_win64.dll", "rxtxParallel_win64");
+                loadLib(runPath, "/rxtxSerial_win64.dll", "rxtxSerial_win64");
+            } else {
+                loadLib(runPath, "/rxtxParallel_win86.dll", "rxtxParallel_win86");
+                loadLib(runPath, "/rxtxSerial_win86.dll", "rxtxSerial_win86");
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -70,7 +75,9 @@ public class Main extends Application {
         name = name + ".dll";
         File fileOut = new File(path + File.separator + "libs" + File.separator+name);
         try (InputStream is = Main.class.getResourceAsStream(resPath)) {
-            Files.copy(is, fileOut.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if(!fileOut.exists()) {
+                Files.copy(is, fileOut.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (IOException e) {
             fileOut.delete();
             throw e;
